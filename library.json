@@ -1,0 +1,18 @@
+{
+    "name": "CamS3Library",
+    "description": "Library for M5Stack Unit CamS3-5MP (ESP32-S3 with OV5640 sensor, SD card, PDM microphone)",
+    "keywords": "CamS3, UnitCamS3, M5Stack, ESP32-S3, OV5640, Camera, MJPEG, SDCard, PDM, Microphone, Audio",
+    "authors": {
+        "name": "Ginés Sanz",
+        "maintainer": true
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ginixsan/CamS3Library.git"
+    },
+    "version": "1.2.0",
+    "license": "MIT",
+    "frameworks": "arduino",
+    "platforms": "espressif32",
+    "headers": "CamS3Library.h"
+}

@@ -1,0 +1,97 @@
+#######################################
+# Syntax Coloring Map for CamS3Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+CamS3Library	KEYWORD1
+CamS3_Camera	KEYWORD1
+CamS3_SD	KEYWORD1
+CamS3_Mic	KEYWORD1
+cams3_sensor_type_t	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+get	KEYWORD2
+free	KEYWORD2
+deinit	KEYWORD2
+end	KEYWORD2
+getSensorType	KEYWORD2
+getSensorName	KEYWORD2
+isInitialized	KEYWORD2
+ledOn	KEYWORD2
+ledOff	KEYWORD2
+ledSet	KEYWORD2
+setFrameSize	KEYWORD2
+setQuality	KEYWORD2
+setVFlip	KEYWORD2
+setHMirror	KEYWORD2
+setBrightness	KEYWORD2
+setSaturation	KEYWORD2
+setContrast	KEYWORD2
+setSpecialEffect	KEYWORD2
+setWhiteBalance	KEYWORD2
+setExposureCtrl	KEYWORD2
+setGainCtrl	KEYWORD2
+captureToSD	KEYWORD2
+recordToSD	KEYWORD2
+getCardType	KEYWORD2
+getCardTypeName	KEYWORD2
+getTotalBytes	KEYWORD2
+getUsedBytes	KEYWORD2
+getFreeBytes	KEYWORD2
+writeFile	KEYWORD2
+appendFile	KEYWORD2
+readFile	KEYWORD2
+exists	KEYWORD2
+remove	KEYWORD2
+rename	KEYWORD2
+mkdir	KEYWORD2
+rmdir	KEYWORD2
+getFileSize	KEYWORD2
+listDir	KEYWORD2
+saveFrame	KEYWORD2
+generateFilename	KEYWORD2
+getFS	KEYWORD2
+read	KEYWORD2
+readBytes	KEYWORD2
+record	KEYWORD2
+freeSamples	KEYWORD2
+getSampleRate	KEYWORD2
+getSampleBits	KEYWORD2
+getPeakAmplitude	KEYWORD2
+getRMSLevel	KEYWORD2
+isSoundDetected	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+CamS3	KEYWORD2
+Camera	KEYWORD2
+Sd	KEYWORD2
+Mic	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+CAMS3_SENSOR_UNKNOWN	LITERAL1
+CAMS3_SENSOR_OV5640	LITERAL1
+CAMS3_SENSOR_OV3660	LITERAL1
+CAMS3_SENSOR_OV2640	LITERAL1
+CAMS3_LED_GPIO	LITERAL1
+CAMS3_SD_CS_PIN	LITERAL1
+CAMS3_SD_MOSI_PIN	LITERAL1
+CAMS3_SD_SCK_PIN	LITERAL1
+CAMS3_SD_MISO_PIN	LITERAL1
+CAMS3_SD_SPI_FREQ	LITERAL1
+CAMS3_MIC_CLK_PIN	LITERAL1
+CAMS3_MIC_DATA_PIN	LITERAL1
+CAMS3_MIC_SAMPLE_RATE	LITERAL1
+CAMS3_MIC_SAMPLE_BITS	LITERAL1

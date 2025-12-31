@@ -1,0 +1,36 @@
+# Arduino build files
+*.elf
+*.hex
+*.bin
+*.eep
+*.map
+
+# Arduino backup files
+*.bak
+
+# Arduino log files
+*.log
+
+# Arduino preferences
+*.dmp
+*.sublime-workspace
+
+# Arduino sketch build directory
+build/
+*.dep
+
+# Arduino IDE files
+*.ino.*
+.arduino/
+
+# Library and hardware submodule folders (optional, uncomment if present)
+# libraries/
+# hardware/
+
+# Mac and Windows cruft
+.DS_Store
+Thumbs.db
+
+# Sketchbook settings
+*.sketches
+
