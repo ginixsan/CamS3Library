@@ -4,7 +4,7 @@
 *.bin
 *.eep
 *.map
-
+/bin
 # Arduino backup files
 *.bak
 
@@ -34,3 +34,4 @@ Thumbs.db
 # Sketchbook settings
 *.sketches
 
+/bin/
