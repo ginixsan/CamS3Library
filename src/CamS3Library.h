@@ -16,6 +16,7 @@
 #include <SD.h>
 #include <SPI.h>
 #include <driver/i2s_pdm.h>
+#include <Wire.h>
 
 // ============================================
 // M5Stack Unit CamS3-5MP GPIO Pin Definitions
@@ -72,6 +73,15 @@ typedef enum {
 } cams3_sensor_type_t;
 
 // ============================================
+// Hardware version
+// ============================================
+typedef enum {
+    CAMS3_HW_VERSION_UNKNOWN = 0,
+    CAMS3_HW_VERSION_OLD = 0xFF,
+    CAMS3_HW_VERSION_NEW = 0x01
+} cams3_hw_version_t;
+
+// ============================================
 // Camera Class
 // ============================================
 class CamS3_Camera {
@@ -80,6 +90,7 @@ class CamS3_Camera {
     bool _initialized               = false;
 
     void _applySensorDefaults();
+    uint8_t _readRegister(uint8_t slaveAddr, uint16_t regAddr);
 
    public:
     camera_fb_t* fb       = nullptr;
@@ -128,6 +139,18 @@ class CamS3_Camera {
      * @return Sensor name
      */
     const char* getSensorName();
+
+    /**
+     * @brief Get the hardware version
+     * @return Hardware version enum (CAMS3_HW_VERSION_NEW, CAMS3_HW_VERSION_OLD, or CAMS3_HW_VERSION_UNKNOWN)
+     */
+    cams3_hw_version_t getHardwareVersion();
+
+    /**
+     * @brief Get the hardware version name as string
+     * @return Hardware version name ("New Version", "Old Version", or "Unknown")
+     */
+    const char* getHardwareVersionName();
 
     /**
      * @brief Check if camera is initialized

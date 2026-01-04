@@ -1,7 +1,7 @@
 /**
  * @file CamS3Library.cpp
  * @brief Library for M5Stack Unit CamS3-5MP (ESP32-S3 with OV5640 sensor)
- * @version 1.2.0
+ * @version 1.2.4
  * @date 2024
  *
  * @copyright MIT License
@@ -187,6 +187,50 @@ const char* CamS3_Camera::getSensorName() {
             return "OV3660";
         case CAMS3_SENSOR_OV2640:
             return "OV2640";
+        default:
+            return "Unknown";
+    }
+}
+
+uint8_t CamS3_Camera::_readRegister(uint8_t slaveAddr, uint16_t regAddr) {
+    Wire.beginTransmission(slaveAddr);
+    Wire.write((uint8_t)(regAddr >> 8));
+    Wire.write((uint8_t)(regAddr & 0xFF));
+    Wire.endTransmission(false);
+    Wire.requestFrom(slaveAddr, (uint8_t)1);
+    if (Wire.available()) {
+        return Wire.read();
+    }
+    return 0x00;
+}
+
+cams3_hw_version_t CamS3_Camera::getHardwareVersion() {
+    // Initialize I2C if not already done
+    static bool i2cInitialized = false;
+    if (!i2cInitialized) {
+        Wire.begin(CAMS3_SIOD_GPIO_NUM, CAMS3_SIOC_GPIO_NUM);
+        i2cInitialized = true;
+    }
+
+    // Read hardware version register (0x0200) from device 0x1f
+    uint8_t version = _readRegister(0x1f, 0x0200);
+    
+    if (version == 0x01) {
+        return CAMS3_HW_VERSION_NEW;
+    } else if (version == 0xFF) {
+        return CAMS3_HW_VERSION_OLD;
+    } else {
+        return CAMS3_HW_VERSION_UNKNOWN;
+    }
+}
+
+const char* CamS3_Camera::getHardwareVersionName() {
+    cams3_hw_version_t version = getHardwareVersion();
+    switch (version) {
+        case CAMS3_HW_VERSION_NEW:
+            return "New Version";
+        case CAMS3_HW_VERSION_OLD:
+            return "Old Version";
         default:
             return "Unknown";
     }

@@ -6,6 +6,7 @@ Arduino library for **M5Stack Unit CamS3-5MP** (ESP32-S3 with OV5640 sensor).
 
 - Easy camera initialization with sensible defaults
 - Automatic sensor detection (OV5640, OV3660, OV2640)
+- **Hardware version detection** (New/Old version identification)
 - **SD card support** with file operations
 - **PDM microphone** with audio recording and WAV export
 - Built-in LED control
@@ -82,6 +83,7 @@ void setup() {
     }
     
     Serial.printf("Camera ready: %s\n", CamS3.Camera.getSensorName());
+    Serial.printf("Hardware version: %s\n", CamS3.Camera.getHardwareVersionName());
 }
 
 void loop() {
@@ -228,6 +230,37 @@ CamS3.Camera.setBrightness(0);        // -2 to 2
 CamS3.Camera.setSaturation(0);        // -2 to 2
 CamS3.Camera.setContrast(0);          // -2 to 2
 ```
+
+### Hardware Version Detection
+
+Check the hardware version of your CamS3 unit:
+
+```cpp
+// Get version as enum
+cams3_hw_version_t version = CamS3.Camera.getHardwareVersion();
+switch (version) {
+    case CAMS3_HW_VERSION_NEW:
+        Serial.println("New Version (0x01)");
+        break;
+    case CAMS3_HW_VERSION_OLD:
+        Serial.println("Old Version (0xFF)");
+        break;
+    case CAMS3_HW_VERSION_UNKNOWN:
+        Serial.println("Unknown Version");
+        break;
+}
+
+// Get version as string
+const char* versionName = CamS3.Camera.getHardwareVersionName();
+Serial.println(versionName);  // "New Version", "Old Version", or "Unknown"
+```
+
+**Hardware Version Values:**
+- `CAMS3_HW_VERSION_NEW` (0x01) - New hardware version
+- `CAMS3_HW_VERSION_OLD` (0xFF) - Old hardware version
+- `CAMS3_HW_VERSION_UNKNOWN` (0x00) - Unknown or error reading version
+
+**Note:** This function reads the hardware version register via I2C. I2C is automatically initialized on first use.
 
 ### Microphone Operations
 
