@@ -10,7 +10,12 @@ Arduino library for **M5Stack Unit CamS3-5MP** (ESP32-S3 with OV5640 sensor).
 - **SD card support** with file operations
 - **PDM microphone** with audio recording and WAV export
 - Built-in LED control
-- Sensor settings API (brightness, saturation, contrast, etc.)
+- **Comprehensive sensor control API:**
+  - Image quality (brightness, contrast, saturation, sharpness, denoise)
+  - Auto white balance (AWB, AWB gain, WB modes)
+  - Auto exposure & gain control (AEC, AEC2, AGC with manual override)
+  - Image processing (special effects, lens correction, pixel correction)
+  - Advanced register access and low-level control
 - One-liner capture to SD card
 - One-liner audio recording to WAV
 - Compatible with Arduino IDE and PlatformIO
@@ -221,15 +226,161 @@ CamS3.Camera.ledSet(true);
 
 ### Camera Settings
 
+#### Basic Settings
+
 ```cpp
-CamS3.Camera.setFrameSize(FRAMESIZE_VGA);
-CamS3.Camera.setQuality(10);          // 0-63, lower=better
-CamS3.Camera.setVFlip(true);
-CamS3.Camera.setHMirror(true);
-CamS3.Camera.setBrightness(0);        // -2 to 2
-CamS3.Camera.setSaturation(0);        // -2 to 2
-CamS3.Camera.setContrast(0);          // -2 to 2
+CamS3.Camera.setFrameSize(FRAMESIZE_VGA);     // Change resolution
+CamS3.Camera.setPixelFormat(PIXFORMAT_JPEG);  // RGB565, JPEG, YUV422, etc.
+CamS3.Camera.setQuality(10);                  // 0-63, lower=better quality
+CamS3.Camera.setVFlip(true);                  // Vertical flip
+CamS3.Camera.setHMirror(true);                // Horizontal mirror
+CamS3.Camera.resetSensor();                   // Reset to defaults
 ```
+
+#### Image Quality & Enhancement
+
+```cpp
+CamS3.Camera.setBrightness(0);        // -2 to +2
+CamS3.Camera.setSaturation(0);        // -2 to +2
+CamS3.Camera.setContrast(0);          // -2 to +2
+CamS3.Camera.setSharpness(0);         // -2 to +2
+CamS3.Camera.setDenoise(0);           // 0-8, higher = more denoising
+CamS3.Camera.setGainCeiling(GAINCEILING_2X);  // 2X, 4X, 8X, 16X, 32X, 64X, 128X
+CamS3.Camera.setColorbar(false);      // Enable test pattern
+```
+
+#### Auto White Balance
+
+```cpp
+CamS3.Camera.setWhiteBalance(true);   // Enable/disable AWB
+CamS3.Camera.setAWBGain(true);        // Enable/disable AWB gain
+CamS3.Camera.setWBMode(0);            // 0=Auto, 1=Sunny, 2=Cloudy, 3=Office, 4=Home
+```
+
+#### Auto Exposure & Gain Control
+
+```cpp
+CamS3.Camera.setExposureCtrl(true);   // Enable/disable AEC
+CamS3.Camera.setAEC2(false);          // Enable/disable AEC2 (DSP)
+CamS3.Camera.setAELevel(0);           // -2 to +2 (exposure compensation)
+CamS3.Camera.setAECValue(300);        // 0-1200 (manual exposure when AEC off)
+CamS3.Camera.setGainCtrl(true);       // Enable/disable AGC
+CamS3.Camera.setAGCGain(0);           // 0-30 (manual gain when AGC off)
+```
+
+#### Image Processing
+
+```cpp
+CamS3.Camera.setSpecialEffect(0);     // 0=None, 1=Negative, 2=Grayscale,
+                                      // 3=Red/Green/Blue tint, 4=Sepia,
+                                      // 5=BW, 6=Antique
+CamS3.Camera.setDCW(true);            // Enable downsize/crop window
+CamS3.Camera.setBPC(false);           // Black pixel correction
+CamS3.Camera.setWPC(false);           // White pixel correction
+CamS3.Camera.setRawGMA(true);         // Raw gamma
+CamS3.Camera.setLensCorrection(true); // Lens distortion correction
+```
+
+#### Advanced Register Access
+
+```cpp
+// Read/write sensor registers directly
+int value = CamS3.Camera.getRegister(0x3008, 0xFF);
+CamS3.Camera.setRegister(0x3008, 0xFF, 0x42);
+
+// Advanced resolution control with cropping/scaling
+CamS3.Camera.setResolutionRaw(startX, startY, endX, endY,
+                              offsetX, offsetY, totalX, totalY,
+                              outputX, outputY, scale, binning);
+
+// PLL and clock configuration (advanced users)
+CamS3.Camera.setPLL(bypass, mul, sys, root, pre, seld5, pclken, pclk);
+CamS3.Camera.setXCLK(timer, xclk);
+```
+
+**Complete Example - Fine-tuning Image Quality:**
+
+```cpp
+void setup() {
+    Serial.begin(115200);
+
+    if (!CamS3.begin()) {
+        Serial.println("Camera init failed!");
+        return;
+    }
+
+    // Set resolution and format
+    CamS3.Camera.setFrameSize(FRAMESIZE_HD);
+    CamS3.Camera.setQuality(10);
+
+    // Image quality adjustments
+    CamS3.Camera.setSharpness(1);           // Slightly sharper
+    CamS3.Camera.setDenoise(3);             // Moderate noise reduction
+    CamS3.Camera.setBrightness(0);          // Normal brightness
+    CamS3.Camera.setContrast(0);            // Normal contrast
+    CamS3.Camera.setSaturation(0);          // Normal saturation
+
+    // Exposure and gain control
+    CamS3.Camera.setExposureCtrl(true);     // Auto exposure ON
+    CamS3.Camera.setAELevel(-1);            // Slightly underexpose
+    CamS3.Camera.setGainCtrl(true);         // Auto gain ON
+    CamS3.Camera.setGainCeiling(GAINCEILING_16X);  // Limit max gain
+
+    // White balance
+    CamS3.Camera.setWhiteBalance(true);     // Auto WB ON
+    CamS3.Camera.setWBMode(0);              // Auto mode
+
+    // Image processing
+    CamS3.Camera.setLensCorrection(true);   // Fix lens distortion
+    CamS3.Camera.setBPC(true);              // Remove black pixels
+    CamS3.Camera.setWPC(true);              // Remove white pixels
+
+    Serial.println("Camera configured!");
+}
+
+void loop() {
+    if (CamS3.Camera.get()) {
+        Serial.printf("Captured: %dx%d, %d bytes\n",
+                     CamS3.Camera.fb->width,
+                     CamS3.Camera.fb->height,
+                     CamS3.Camera.fb->len);
+        CamS3.Camera.free();
+    }
+    delay(1000);
+}
+```
+
+#### Sensor Settings Quick Reference
+
+| Function | Parameter Range | Default | Description |
+|----------|----------------|---------|-------------|
+| **Image Quality** ||||
+| `setBrightness()` | -2 to +2 | 0 | Brightness level |
+| `setContrast()` | -2 to +2 | 0 | Contrast level |
+| `setSaturation()` | -2 to +2 | 0 | Color saturation |
+| `setSharpness()` | -2 to +2 | 0 | Edge sharpness |
+| `setDenoise()` | 0 to 8 | 0 | Noise reduction (higher = more) |
+| `setQuality()` | 0 to 63 | 12 | JPEG quality (lower = better) |
+| **Exposure & Gain** ||||
+| `setExposureCtrl()` | true/false | true | Auto exposure control |
+| `setAELevel()` | -2 to +2 | 0 | Exposure compensation |
+| `setAECValue()` | 0 to 1200 | - | Manual exposure value |
+| `setGainCtrl()` | true/false | true | Auto gain control |
+| `setAGCGain()` | 0 to 30 | - | Manual gain value |
+| `setGainCeiling()` | 2X to 128X | 2X | Maximum auto gain |
+| **White Balance** ||||
+| `setWhiteBalance()` | true/false | true | Auto white balance |
+| `setAWBGain()` | true/false | true | AWB gain control |
+| `setWBMode()` | 0 to 4 | 0 | WB mode (0=Auto, 1=Sunny, 2=Cloudy, 3=Office, 4=Home) |
+| **Image Processing** ||||
+| `setSpecialEffect()` | 0 to 6 | 0 | Effect (0=None, 1=Neg, 2=Gray, 3=Tint, 4=Sepia, 5=BW, 6=Antique) |
+| `setLensCorrection()` | true/false | false | Fix lens distortion |
+| `setBPC()` | true/false | false | Black pixel correction |
+| `setWPC()` | true/false | false | White pixel correction |
+| `setRawGMA()` | true/false | true | Raw gamma |
+| `setDCW()` | true/false | true | Downsize enable |
+
+**Note:** Not all settings are supported by all camera sensors. The library checks for function availability before calling.
 
 ### Hardware Version Detection
 

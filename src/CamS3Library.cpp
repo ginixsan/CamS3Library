@@ -256,9 +256,18 @@ void CamS3_Camera::ledSet(bool state) {
 // Sensor Settings
 // ============================================
 
+// ============================================
+// Sensor Settings - Basic
+// ============================================
+
 bool CamS3_Camera::setFrameSize(framesize_t size) {
     if (!sensor) return false;
     return sensor->set_framesize(sensor, size) == 0;
+}
+
+bool CamS3_Camera::setPixelFormat(pixformat_t format) {
+    if (!sensor) return false;
+    return sensor->set_pixformat(sensor, format) == 0;
 }
 
 bool CamS3_Camera::setQuality(uint8_t quality) {
@@ -276,6 +285,15 @@ bool CamS3_Camera::setHMirror(bool mirror) {
     return sensor->set_hmirror(sensor, mirror ? 1 : 0) == 0;
 }
 
+bool CamS3_Camera::resetSensor() {
+    if (!sensor || !sensor->reset) return false;
+    return sensor->reset(sensor) == 0;
+}
+
+// ============================================
+// Image Quality & Enhancement
+// ============================================
+
 bool CamS3_Camera::setBrightness(int level) {
     if (!sensor) return false;
     return sensor->set_brightness(sensor, level) == 0;
@@ -291,24 +309,144 @@ bool CamS3_Camera::setContrast(int level) {
     return sensor->set_contrast(sensor, level) == 0;
 }
 
-bool CamS3_Camera::setSpecialEffect(int effect) {
-    if (!sensor) return false;
-    return sensor->set_special_effect(sensor, effect) == 0;
+bool CamS3_Camera::setSharpness(int level) {
+    if (!sensor || !sensor->set_sharpness) return false;
+    return sensor->set_sharpness(sensor, level) == 0;
 }
+
+bool CamS3_Camera::setDenoise(int level) {
+    if (!sensor || !sensor->set_denoise) return false;
+    return sensor->set_denoise(sensor, level) == 0;
+}
+
+bool CamS3_Camera::setGainCeiling(gainceiling_t gainceiling) {
+    if (!sensor || !sensor->set_gainceiling) return false;
+    return sensor->set_gainceiling(sensor, gainceiling) == 0;
+}
+
+bool CamS3_Camera::setColorbar(bool enable) {
+    if (!sensor || !sensor->set_colorbar) return false;
+    return sensor->set_colorbar(sensor, enable ? 1 : 0) == 0;
+}
+
+// ============================================
+// Auto White Balance
+// ============================================
 
 bool CamS3_Camera::setWhiteBalance(bool enable) {
     if (!sensor) return false;
     return sensor->set_whitebal(sensor, enable ? 1 : 0) == 0;
 }
 
+bool CamS3_Camera::setAWBGain(bool enable) {
+    if (!sensor || !sensor->set_awb_gain) return false;
+    return sensor->set_awb_gain(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setWBMode(int mode) {
+    if (!sensor || !sensor->set_wb_mode) return false;
+    return sensor->set_wb_mode(sensor, mode) == 0;
+}
+
+// ============================================
+// Auto Exposure & Gain Control
+// ============================================
+
 bool CamS3_Camera::setExposureCtrl(bool enable) {
     if (!sensor) return false;
     return sensor->set_exposure_ctrl(sensor, enable ? 1 : 0) == 0;
 }
 
+bool CamS3_Camera::setAEC2(bool enable) {
+    if (!sensor || !sensor->set_aec2) return false;
+    return sensor->set_aec2(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setAELevel(int level) {
+    if (!sensor || !sensor->set_ae_level) return false;
+    return sensor->set_ae_level(sensor, level) == 0;
+}
+
+bool CamS3_Camera::setAECValue(int value) {
+    if (!sensor || !sensor->set_aec_value) return false;
+    return sensor->set_aec_value(sensor, value) == 0;
+}
+
 bool CamS3_Camera::setGainCtrl(bool enable) {
     if (!sensor) return false;
     return sensor->set_gain_ctrl(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setAGCGain(int gain) {
+    if (!sensor || !sensor->set_agc_gain) return false;
+    return sensor->set_agc_gain(sensor, gain) == 0;
+}
+
+// ============================================
+// Image Processing
+// ============================================
+
+bool CamS3_Camera::setSpecialEffect(int effect) {
+    if (!sensor) return false;
+    return sensor->set_special_effect(sensor, effect) == 0;
+}
+
+bool CamS3_Camera::setDCW(bool enable) {
+    if (!sensor || !sensor->set_dcw) return false;
+    return sensor->set_dcw(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setBPC(bool enable) {
+    if (!sensor || !sensor->set_bpc) return false;
+    return sensor->set_bpc(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setWPC(bool enable) {
+    if (!sensor || !sensor->set_wpc) return false;
+    return sensor->set_wpc(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setRawGMA(bool enable) {
+    if (!sensor || !sensor->set_raw_gma) return false;
+    return sensor->set_raw_gma(sensor, enable ? 1 : 0) == 0;
+}
+
+bool CamS3_Camera::setLensCorrection(bool enable) {
+    if (!sensor || !sensor->set_lenc) return false;
+    return sensor->set_lenc(sensor, enable ? 1 : 0) == 0;
+}
+
+// ============================================
+// Advanced Register & Low-Level Control
+// ============================================
+
+int CamS3_Camera::getRegister(int reg, int mask) {
+    if (!sensor || !sensor->get_reg) return -1;
+    return sensor->get_reg(sensor, reg, mask);
+}
+
+bool CamS3_Camera::setRegister(int reg, int mask, int value) {
+    if (!sensor || !sensor->set_reg) return false;
+    return sensor->set_reg(sensor, reg, mask, value) == 0;
+}
+
+bool CamS3_Camera::setResolutionRaw(int startX, int startY, int endX, int endY,
+                                    int offsetX, int offsetY, int totalX, int totalY,
+                                    int outputX, int outputY, bool scale, bool binning) {
+    if (!sensor || !sensor->set_res_raw) return false;
+    return sensor->set_res_raw(sensor, startX, startY, endX, endY,
+                              offsetX, offsetY, totalX, totalY,
+                              outputX, outputY, scale, binning) == 0;
+}
+
+bool CamS3_Camera::setPLL(int bypass, int mul, int sys, int root, int pre, int seld5, int pclken, int pclk) {
+    if (!sensor || !sensor->set_pll) return false;
+    return sensor->set_pll(sensor, bypass, mul, sys, root, pre, seld5, pclken, pclk) == 0;
+}
+
+bool CamS3_Camera::setXCLK(int timer, int xclk) {
+    if (!sensor || !sensor->set_xclk) return false;
+    return sensor->set_xclk(sensor, timer, xclk) == 0;
 }
 
 // ============================================

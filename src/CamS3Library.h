@@ -165,18 +165,283 @@ class CamS3_Camera {
     void ledOff();
     void ledSet(bool state);
 
-    // Sensor settings
+    // ============================================
+    // Sensor Settings - Basic
+    // ============================================
+
+    /**
+     * @brief Set camera frame size/resolution
+     * @param size Frame size (FRAMESIZE_96X96 to FRAMESIZE_5MP)
+     * @return true if successful
+     */
     bool setFrameSize(framesize_t size);
+
+    /**
+     * @brief Set pixel format
+     * @param format Pixel format (PIXFORMAT_RGB565, PIXFORMAT_JPEG, etc.)
+     * @return true if successful
+     */
+    bool setPixelFormat(pixformat_t format);
+
+    /**
+     * @brief Set JPEG quality
+     * @param quality JPEG quality 0-63 (lower is better quality)
+     * @return true if successful
+     */
     bool setQuality(uint8_t quality);
+
+    /**
+     * @brief Set vertical flip
+     * @param flip true to flip image vertically
+     * @return true if successful
+     */
     bool setVFlip(bool flip);
+
+    /**
+     * @brief Set horizontal mirror
+     * @param mirror true to mirror image horizontally
+     * @return true if successful
+     */
     bool setHMirror(bool mirror);
+
+    /**
+     * @brief Reset sensor to default configuration
+     * @return true if successful
+     */
+    bool resetSensor();
+
+    // ============================================
+    // Image Quality & Enhancement
+    // ============================================
+
+    /**
+     * @brief Set brightness level
+     * @param level Brightness level (-2 to +2)
+     * @return true if successful
+     */
     bool setBrightness(int level);
+
+    /**
+     * @brief Set color saturation level
+     * @param level Saturation level (-2 to +2)
+     * @return true if successful
+     */
     bool setSaturation(int level);
+
+    /**
+     * @brief Set contrast level
+     * @param level Contrast level (-2 to +2)
+     * @return true if successful
+     */
     bool setContrast(int level);
-    bool setSpecialEffect(int effect);
+
+    /**
+     * @brief Set sharpness level
+     * @param level Sharpness level (-2 to +2)
+     * @return true if successful
+     */
+    bool setSharpness(int level);
+
+    /**
+     * @brief Set denoise level
+     * @param level Denoise level (0-8, higher = more denoising)
+     * @return true if successful
+     */
+    bool setDenoise(int level);
+
+    /**
+     * @brief Set gain ceiling
+     * @param gainceiling Gain ceiling (GAINCEILING_2X to GAINCEILING_128X)
+     * @return true if successful
+     */
+    bool setGainCeiling(gainceiling_t gainceiling);
+
+    /**
+     * @brief Enable/disable colorbar test pattern
+     * @param enable true to show colorbar pattern
+     * @return true if successful
+     */
+    bool setColorbar(bool enable);
+
+    // ============================================
+    // Auto White Balance
+    // ============================================
+
+    /**
+     * @brief Enable/disable automatic white balance
+     * @param enable true to enable AWB
+     * @return true if successful
+     */
     bool setWhiteBalance(bool enable);
+
+    /**
+     * @brief Enable/disable automatic white balance gain
+     * @param enable true to enable AWB gain
+     * @return true if successful
+     */
+    bool setAWBGain(bool enable);
+
+    /**
+     * @brief Set white balance mode
+     * @param mode WB mode (0=Auto, 1=Sunny, 2=Cloudy, 3=Office, 4=Home)
+     * @return true if successful
+     */
+    bool setWBMode(int mode);
+
+    // ============================================
+    // Auto Exposure & Gain Control
+    // ============================================
+
+    /**
+     * @brief Enable/disable automatic exposure control
+     * @param enable true to enable AEC
+     * @return true if successful
+     */
     bool setExposureCtrl(bool enable);
+
+    /**
+     * @brief Enable/disable AEC2 (DSP auto exposure)
+     * @param enable true to enable AEC2
+     * @return true if successful
+     */
+    bool setAEC2(bool enable);
+
+    /**
+     * @brief Set auto exposure level
+     * @param level AE level (-2 to +2)
+     * @return true if successful
+     */
+    bool setAELevel(int level);
+
+    /**
+     * @brief Set manual exposure value (when AEC disabled)
+     * @param value Exposure value (0-1200)
+     * @return true if successful
+     */
+    bool setAECValue(int value);
+
+    /**
+     * @brief Enable/disable automatic gain control
+     * @param enable true to enable AGC
+     * @return true if successful
+     */
     bool setGainCtrl(bool enable);
+
+    /**
+     * @brief Set manual AGC gain value (when AGC disabled)
+     * @param gain AGC gain (0-30)
+     * @return true if successful
+     */
+    bool setAGCGain(int gain);
+
+    // ============================================
+    // Image Processing
+    // ============================================
+
+    /**
+     * @brief Set special image effect
+     * @param effect Effect (0=None, 1=Negative, 2=Grayscale, 3=Red/Green/Blue tint, 4=Sepia, 5=BW, 6=Antique)
+     * @return true if successful
+     */
+    bool setSpecialEffect(int effect);
+
+    /**
+     * @brief Enable/disable downsize (DCW - Downsize Crop Window)
+     * @param enable true to enable downsize
+     * @return true if successful
+     */
+    bool setDCW(bool enable);
+
+    /**
+     * @brief Enable/disable black pixel correction
+     * @param enable true to enable BPC
+     * @return true if successful
+     */
+    bool setBPC(bool enable);
+
+    /**
+     * @brief Enable/disable white pixel correction
+     * @param enable true to enable WPC
+     * @return true if successful
+     */
+    bool setWPC(bool enable);
+
+    /**
+     * @brief Enable/disable raw gamma
+     * @param enable true to enable raw gamma
+     * @return true if successful
+     */
+    bool setRawGMA(bool enable);
+
+    /**
+     * @brief Enable/disable lens correction
+     * @param enable true to enable lens correction
+     * @return true if successful
+     */
+    bool setLensCorrection(bool enable);
+
+    // ============================================
+    // Advanced Register & Low-Level Control
+    // ============================================
+
+    /**
+     * @brief Read sensor register value
+     * @param reg Register address
+     * @param mask Bit mask to apply
+     * @return Register value, or -1 on error
+     */
+    int getRegister(int reg, int mask);
+
+    /**
+     * @brief Write sensor register value
+     * @param reg Register address
+     * @param mask Bit mask to apply
+     * @param value Value to write
+     * @return true if successful
+     */
+    bool setRegister(int reg, int mask, int value);
+
+    /**
+     * @brief Set raw resolution parameters (advanced)
+     * @param startX Start X coordinate
+     * @param startY Start Y coordinate
+     * @param endX End X coordinate
+     * @param endY End Y coordinate
+     * @param offsetX X offset
+     * @param offsetY Y offset
+     * @param totalX Total X size
+     * @param totalY Total Y size
+     * @param outputX Output X size
+     * @param outputY Output Y size
+     * @param scale Enable scaling
+     * @param binning Enable binning
+     * @return true if successful
+     */
+    bool setResolutionRaw(int startX, int startY, int endX, int endY,
+                          int offsetX, int offsetY, int totalX, int totalY,
+                          int outputX, int outputY, bool scale, bool binning);
+
+    /**
+     * @brief Configure sensor PLL (Phase-Locked Loop) settings (advanced)
+     * @param bypass PLL bypass
+     * @param mul PLL multiplier
+     * @param sys System divider
+     * @param root Root divider
+     * @param pre Pre-divider
+     * @param seld5 Select divider 5
+     * @param pclken Pixel clock enable
+     * @param pclk Pixel clock divider
+     * @return true if successful
+     */
+    bool setPLL(int bypass, int mul, int sys, int root, int pre, int seld5, int pclken, int pclk);
+
+    /**
+     * @brief Set external clock (XCLK) configuration (advanced)
+     * @param timer Timer number
+     * @param xclk Clock frequency
+     * @return true if successful
+     */
+    bool setXCLK(int timer, int xclk);
 };
 
 // ============================================
