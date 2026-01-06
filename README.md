@@ -69,7 +69,7 @@ Add to your `platformio.ini`:
 
 ```ini
 lib_deps =
-    https://github.com/yourusername/CamS3Library.git
+    https://github.com/ginixsan/CamS3Library.git
 ```
 
 ## Quick Start
