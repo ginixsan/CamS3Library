@@ -4,56 +4,56 @@ Arduino library for **M5Stack Unit CamS3-5MP** (ESP32-S3 with OV5640 sensor).
 
 ## Features
 
-- Easy camera initialization with sensible defaults
-- Automatic sensor detection (OV5640, OV3660, OV2640)
-- **Hardware version detection** (New/Old version identification)
-- **SD card support** with file operations
-- **PDM microphone** with audio recording and WAV export
-- Built-in LED control
-- **Comprehensive sensor control API:**
-  - Image quality (brightness, contrast, saturation, sharpness, denoise)
-  - Auto white balance (AWB, AWB gain, WB modes)
-  - Auto exposure & gain control (AEC, AEC2, AGC with manual override)
-  - Image processing (special effects, lens correction, pixel correction)
-  - Advanced register access and low-level control
-- One-liner capture to SD card
-- One-liner audio recording to WAV
-- Compatible with Arduino IDE and PlatformIO
+-   Easy camera initialization with sensible defaults
+-   Automatic sensor detection (OV5640, OV3660, OV2640)
+-   **Hardware version detection** (New/Old version identification)
+-   **SD card support** with file operations
+-   **PDM microphone** with audio recording and WAV export
+-   Built-in LED control
+-   **Comprehensive sensor control API:**
+    -   Image quality (brightness, contrast, saturation, sharpness, denoise)
+    -   Auto white balance (AWB, AWB gain, WB modes)
+    -   Auto exposure & gain control (AEC, AEC2, AGC with manual override)
+    -   Image processing (special effects, lens correction, pixel correction)
+    -   Advanced register access and low-level control
+-   One-liner capture to SD card
+-   One-liner audio recording to WAV
+-   Compatible with Arduino IDE and PlatformIO
 
 ## Hardware
 
-| Specification | Value |
-|--------------|-------|
-| MCU | ESP32-S3 |
-| Camera Sensor | OV5640 (5MP) |
-| Max Resolution | 2592x1944 |
-| PSRAM | 8MB |
-| SD Card | MicroSD (SPI) |
-| Microphone | PDM Digital |
-| LED GPIO | 14 |
+| Specification  | Value         |
+| -------------- | ------------- |
+| MCU            | ESP32-S3      |
+| Camera Sensor  | OV5640 (5MP)  |
+| Max Resolution | 2592x1944     |
+| PSRAM          | 8MB           |
+| SD Card        | MicroSD (SPI) |
+| Microphone     | PDM Digital   |
+| LED GPIO       | 14            |
 
 ### Pin Mapping
 
-| Function | GPIO |
-|----------|------|
-| **Camera** | |
-| RESET | 21 |
-| XCLK | 11 |
-| SIOD (SDA) | 17 |
-| SIOC (SCL) | 41 |
-| D0-D7 | 6,15,16,7,5,10,4,13 |
-| VSYNC | 42 |
-| HREF | 18 |
-| PCLK | 12 |
-| LED | 14 |
-| **SD Card** | |
-| CS | 9 |
-| MOSI | 38 |
-| SCK | 39 |
-| MISO | 40 |
-| **Microphone** | |
-| CLK | 47 |
-| DATA | 48 |
+| Function       | GPIO                |
+| -------------- | ------------------- |
+| **Camera**     |                     |
+| RESET          | 21                  |
+| XCLK           | 11                  |
+| SIOD (SDA)     | 17                  |
+| SIOC (SCL)     | 41                  |
+| D0-D7          | 6,15,16,7,5,10,4,13 |
+| VSYNC          | 42                  |
+| HREF           | 18                  |
+| PCLK           | 12                  |
+| LED            | 14                  |
+| **SD Card**    |                     |
+| CS             | 9                   |
+| MOSI           | 38                  |
+| SCK            | 39                  |
+| MISO           | 40                  |
+| **Microphone** |                     |
+| CLK            | 47                  |
+| DATA           | 48                  |
 
 ## Installation
 
@@ -81,12 +81,12 @@ lib_deps =
 
 void setup() {
     Serial.begin(115200);
-    
+
     if (!CamS3.begin()) {
         Serial.println("Camera init failed!");
         return;
     }
-    
+
     Serial.printf("Camera ready: %s\n", CamS3.Camera.getSensorName());
     Serial.printf("Hardware version: %s\n", CamS3.Camera.getHardwareVersionName());
 }
@@ -107,7 +107,7 @@ void loop() {
 
 void setup() {
     Serial.begin(115200);
-    
+
     // Initialize camera and SD card
     if (!CamS3.begin(true)) {
         Serial.println("Init failed!");
@@ -129,7 +129,7 @@ void loop() {
 
 void setup() {
     Serial.begin(115200);
-    
+
     // Initialize everything
     if (!CamS3.begin(true, true)) {  // (initSD, initMic)
         Serial.println("Init failed!");
@@ -140,10 +140,10 @@ void setup() {
 void loop() {
     // Capture image
     CamS3.captureToSD("/photo.jpg");
-    
+
     // Record 5 seconds of audio
     CamS3.recordToSD("/audio.wav", 5000);
-    
+
     delay(10000);
 }
 ```
@@ -155,7 +155,7 @@ void loop() {
 
 void setup() {
     Serial.begin(115200);
-    
+
     if (!CamS3.Mic.begin(16000, 16)) {  // 16kHz, 16-bit
         Serial.println("Mic init failed!");
         return;
@@ -166,12 +166,12 @@ void loop() {
     // Check sound level
     uint16_t level = CamS3.Mic.getPeakAmplitude(256);
     Serial.printf("Level: %d\n", level);
-    
+
     // Detect sound
     if (CamS3.Mic.isSoundDetected(1000)) {
         Serial.println("Sound detected!");
     }
-    
+
     delay(100);
 }
 ```
@@ -204,7 +204,7 @@ if (CamS3.Camera.get()) {
     size_t len    = CamS3.Camera.fb->len;
     size_t width  = CamS3.Camera.fb->width;
     size_t height = CamS3.Camera.fb->height;
-    
+
     CamS3.Camera.free();  // Always free!
 }
 ```
@@ -352,33 +352,33 @@ void loop() {
 
 #### Sensor Settings Quick Reference
 
-| Function | Parameter Range | Default | Description |
-|----------|----------------|---------|-------------|
-| **Image Quality** ||||
-| `setBrightness()` | -2 to +2 | 0 | Brightness level |
-| `setContrast()` | -2 to +2 | 0 | Contrast level |
-| `setSaturation()` | -2 to +2 | 0 | Color saturation |
-| `setSharpness()` | -2 to +2 | 0 | Edge sharpness |
-| `setDenoise()` | 0 to 8 | 0 | Noise reduction (higher = more) |
-| `setQuality()` | 0 to 63 | 12 | JPEG quality (lower = better) |
-| **Exposure & Gain** ||||
-| `setExposureCtrl()` | true/false | true | Auto exposure control |
-| `setAELevel()` | -2 to +2 | 0 | Exposure compensation |
-| `setAECValue()` | 0 to 1200 | - | Manual exposure value |
-| `setGainCtrl()` | true/false | true | Auto gain control |
-| `setAGCGain()` | 0 to 30 | - | Manual gain value |
-| `setGainCeiling()` | 2X to 128X | 2X | Maximum auto gain |
-| **White Balance** ||||
-| `setWhiteBalance()` | true/false | true | Auto white balance |
-| `setAWBGain()` | true/false | true | AWB gain control |
-| `setWBMode()` | 0 to 4 | 0 | WB mode (0=Auto, 1=Sunny, 2=Cloudy, 3=Office, 4=Home) |
-| **Image Processing** ||||
-| `setSpecialEffect()` | 0 to 6 | 0 | Effect (0=None, 1=Neg, 2=Gray, 3=Tint, 4=Sepia, 5=BW, 6=Antique) |
-| `setLensCorrection()` | true/false | false | Fix lens distortion |
-| `setBPC()` | true/false | false | Black pixel correction |
-| `setWPC()` | true/false | false | White pixel correction |
-| `setRawGMA()` | true/false | true | Raw gamma |
-| `setDCW()` | true/false | true | Downsize enable |
+| Function              | Parameter Range | Default | Description                                                      |
+| --------------------- | --------------- | ------- | ---------------------------------------------------------------- |
+| **Image Quality**     |                 |         |                                                                  |
+| `setBrightness()`     | -2 to +2        | 0       | Brightness level                                                 |
+| `setContrast()`       | -2 to +2        | 0       | Contrast level                                                   |
+| `setSaturation()`     | -2 to +2        | 0       | Color saturation                                                 |
+| `setSharpness()`      | -2 to +2        | 0       | Edge sharpness                                                   |
+| `setDenoise()`        | 0 to 8          | 0       | Noise reduction (higher = more)                                  |
+| `setQuality()`        | 0 to 63         | 12      | JPEG quality (lower = better)                                    |
+| **Exposure & Gain**   |                 |         |                                                                  |
+| `setExposureCtrl()`   | true/false      | true    | Auto exposure control                                            |
+| `setAELevel()`        | -2 to +2        | 0       | Exposure compensation                                            |
+| `setAECValue()`       | 0 to 1200       | -       | Manual exposure value                                            |
+| `setGainCtrl()`       | true/false      | true    | Auto gain control                                                |
+| `setAGCGain()`        | 0 to 30         | -       | Manual gain value                                                |
+| `setGainCeiling()`    | 2X to 128X      | 2X      | Maximum auto gain                                                |
+| **White Balance**     |                 |         |                                                                  |
+| `setWhiteBalance()`   | true/false      | true    | Auto white balance                                               |
+| `setAWBGain()`        | true/false      | true    | AWB gain control                                                 |
+| `setWBMode()`         | 0 to 4          | 0       | WB mode (0=Auto, 1=Sunny, 2=Cloudy, 3=Office, 4=Home)            |
+| **Image Processing**  |                 |         |                                                                  |
+| `setSpecialEffect()`  | 0 to 6          | 0       | Effect (0=None, 1=Neg, 2=Gray, 3=Tint, 4=Sepia, 5=BW, 6=Antique) |
+| `setLensCorrection()` | true/false      | false   | Fix lens distortion                                              |
+| `setBPC()`            | true/false      | false   | Black pixel correction                                           |
+| `setWPC()`            | true/false      | false   | White pixel correction                                           |
+| `setRawGMA()`         | true/false      | true    | Raw gamma                                                        |
+| `setDCW()`            | true/false      | true    | Downsize enable                                                  |
 
 **Note:** Not all settings are supported by all camera sensors. The library checks for function availability before calling.
 
@@ -407,9 +407,10 @@ Serial.println(versionName);  // "New Version", "Old Version", or "Unknown"
 ```
 
 **Hardware Version Values:**
-- `CAMS3_HW_VERSION_NEW` (0x01) - New hardware version
-- `CAMS3_HW_VERSION_OLD` (0xFF) - Old hardware version
-- `CAMS3_HW_VERSION_UNKNOWN` (0x00) - Unknown or error reading version
+
+-   `CAMS3_HW_VERSION_NEW` (0x01) - New hardware version
+-   `CAMS3_HW_VERSION_OLD` (0xFF) - Old hardware version
+-   `CAMS3_HW_VERSION_UNKNOWN` (0x00) - Unknown or error reading version
 
 **Note:** This function reads the hardware version register via I2C. I2C is automatically initialized on first use.
 
@@ -471,27 +472,27 @@ CamS3.Sd.listDir("/", 2);
 
 ## Frame Sizes
 
-| Constant | Resolution |
-|----------|------------|
-| `FRAMESIZE_QQVGA` | 160x120 |
-| `FRAMESIZE_QVGA` | 320x240 |
-| `FRAMESIZE_VGA` | 640x480 |
-| `FRAMESIZE_SVGA` | 800x600 |
-| `FRAMESIZE_XGA` | 1024x768 |
-| `FRAMESIZE_HD` | 1280x720 |
-| `FRAMESIZE_SXGA` | 1280x1024 |
-| `FRAMESIZE_UXGA` | 1600x1200 |
+| Constant          | Resolution |
+| ----------------- | ---------- |
+| `FRAMESIZE_QQVGA` | 160x120    |
+| `FRAMESIZE_QVGA`  | 320x240    |
+| `FRAMESIZE_VGA`   | 640x480    |
+| `FRAMESIZE_SVGA`  | 800x600    |
+| `FRAMESIZE_XGA`   | 1024x768   |
+| `FRAMESIZE_HD`    | 1280x720   |
+| `FRAMESIZE_SXGA`  | 1280x1024  |
+| `FRAMESIZE_UXGA`  | 1600x1200  |
 
 ## Examples
 
-| Example | Description |
-|---------|-------------|
-| **SimpleCapture** | Basic frame capture |
-| **MJPEG_Stream** | WiFi MJPEG streaming server |
-| **CaptureToSD** | Periodic capture to SD card |
-| **SDCard_Advanced** | File/directory operations |
-| **Microphone** | Audio level monitoring |
-| **RecordToSD** | Record audio to WAV files |
+| Example             | Description                 |
+| ------------------- | --------------------------- |
+| **SimpleCapture**   | Basic frame capture         |
+| **MJPEG_Stream**    | WiFi MJPEG streaming server |
+| **CaptureToSD**     | Periodic capture to SD card |
+| **SDCard_Advanced** | File/directory operations   |
+| **Microphone**      | Audio level monitoring      |
+| **RecordToSD**      | Record audio to WAV files   |
 
 ## License
 

@@ -241,15 +241,15 @@ const char* CamS3_Camera::getHardwareVersionName() {
 // ============================================
 
 void CamS3_Camera::ledOn() {
-    digitalWrite(CAMS3_LED_GPIO, HIGH);
+    digitalWrite(CAMS3_LED_GPIO, LOW);  // Active-low LED
 }
 
 void CamS3_Camera::ledOff() {
-    digitalWrite(CAMS3_LED_GPIO, LOW);
+    digitalWrite(CAMS3_LED_GPIO, HIGH);  // Active-low LED
 }
 
 void CamS3_Camera::ledSet(bool state) {
-    digitalWrite(CAMS3_LED_GPIO, state ? HIGH : LOW);
+    digitalWrite(CAMS3_LED_GPIO, state ? LOW : HIGH);  // Active-low LED
 }
 
 // ============================================
